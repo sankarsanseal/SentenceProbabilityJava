@@ -66,7 +66,7 @@ public class ReadFile {
 			//pstmt=con.prepareStatement(insertstr);
 			
 			
-			File fileinput=new File("/Users/sankarsanseal/Downloads/bangladir/AB/wiki_37");
+			File fileinput=new File("/Users/sankarsanseal/Downloads/bangladir/AB/wiki_60");
 			BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(fileinput),"UTF-8"));
 			while((inputline=in.readLine())!=null)
 			{
