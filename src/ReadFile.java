@@ -22,23 +22,29 @@ public class ReadFile {
 		java.sql.ResultSet rst=null;
 		String inputline=null;
 		String [] tokens=null;
-		java.sql.PreparedStatement pstmt;
+		java.sql.PreparedStatement pstmt=null;
 		String insertstr;
+		String selectstr;
+		String updatestr;
+		String previousstr=null;
 		int i;
+		
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			con=DriverManager.getConnection("jdbc:mysql://localhost/ngram?useUnicode=true&characterEncoding=utf-8", "sanku", "testngram");
-			stmt=con.createStatement();
+			/*stmt=con.createStatement();
 			rst=stmt.executeQuery("SELECT * FROM monogram");
 			System.out.println("Fetching Started");
 			while(rst.next())
 			{
 				System.out.println(rst.getString("word"));
-			}
+			}*/
 			
+			selectstr="SELECT * FROM monogram WHERE word=?";
 			insertstr="INSERT INTO monogram (word,count,probability) VALUES(?,?,?)";
-			pstmt=con.prepareStatement(insertstr);
+			updatestr="UPDATE monogram SET count=count +1 WHERE word=?";
+			//pstmt=con.prepareStatement(insertstr);
 			
 			
 			File fileinput=new File("/home/sankarsan/Documents/banglawiki.txt/AB/wiki_00");
@@ -51,10 +57,35 @@ public class ReadFile {
 					System.out.println(tokens[i]);
 					if(tokens[i]!=null)
 					{
-					pstmt.setString(1,tokens[i] );
-					pstmt.setInt(2, 0);
-					pstmt.setFloat(3, 0);
-					pstmt.executeUpdate();
+						pstmt=con.prepareStatement(selectstr);
+						pstmt.setString(1,tokens[i]);
+					
+						rst=pstmt.executeQuery();
+						if(rst.next())
+						{
+							pstmt.close();
+							pstmt=con.prepareStatement(updatestr);
+							pstmt.setString(1, tokens[i]);
+							pstmt.executeUpdate();
+							pstmt.close();
+						
+						}
+						else
+						{
+						pstmt.close();
+						pstmt=con.prepareStatement(insertstr);
+						pstmt.setString(1,tokens[i] );
+						pstmt.setInt(2, 1);
+						pstmt.setFloat(3, 0);
+						pstmt.executeUpdate();
+						pstmt.close();
+						}
+						
+						if(previousstr!=null)
+						{
+							
+						}
+					
 					}
 					
 				}
@@ -64,6 +95,7 @@ public class ReadFile {
 			
 			rst.close();
 			stmt.close();
+			if(pstmt!=null)
 			pstmt.close();
 			con.close();
 			
