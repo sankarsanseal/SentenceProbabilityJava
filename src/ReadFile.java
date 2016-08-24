@@ -36,7 +36,7 @@ public class ReadFile {
 		
 		String updateprob=null;
 		String updateprobbi=null;
-		int i;
+		int i,j;
 		int totalcount=1;
 		int wordpcount=1;
 		
@@ -66,78 +66,93 @@ public class ReadFile {
 			//pstmt=con.prepareStatement(insertstr);
 			
 			
-			File fileinput=new File("/Users/sankarsanseal/Downloads/bangladir/AB/wiki_60");
-			BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(fileinput),"UTF-8"));
-			while((inputline=in.readLine())!=null)
+		
+			
+			File dirinput=new File("/Users/sankarsanseal/Downloads/bangladir/AB/");
+			File [] filelistarr=dirinput.listFiles();
+			File fileinput;
+			for(j=0;j<filelistarr.length;j++)
 			{
-				tokens=inputline.split("\\s+");
-				for(i=0;i<tokens.length;i++)
+				if(filelistarr[j].isFile())
 				{
-					System.out.println(tokens[i]);
-					if(tokens[i]!=null && tokens[i].length() <=100)
+					
+					fileinput=filelistarr[j];
+					//System.out.println(fileinput);
+					BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(fileinput),"UTF-8"));
+					while((inputline=in.readLine())!=null)
 					{
-						pstmt=con.prepareStatement(selectstr);
-						pstmt.setString(1,tokens[i]);
+						tokens=inputline.split("\\s+");
+						for(i=0;i<tokens.length;i++)
+						{
+							System.out.println(tokens[i]);
+							if(tokens[i]!=null && tokens[i].length() <=100)
+							{
+								pstmt=con.prepareStatement(selectstr);
+								pstmt.setString(1,tokens[i]);
 					
-						rst=pstmt.executeQuery();
-						if(rst.next())
-						{
-							pstmt.close();
-							pstmt=con.prepareStatement(updatestr);
-							pstmt.setString(1, tokens[i]);
-							pstmt.executeUpdate();
-							pstmt.close();
+								rst=pstmt.executeQuery();
+								if(rst.next())
+								{
+									pstmt.close();
+									pstmt=con.prepareStatement(updatestr);
+									pstmt.setString(1, tokens[i]);
+									pstmt.executeUpdate();
+									pstmt.close();
 						
-						}
-						else
-						{
-						pstmt.close();
-						pstmt=con.prepareStatement(insertstr);
-						pstmt.setString(1,tokens[i] );
-						pstmt.setInt(2, 1);
-						pstmt.setFloat(3, 0);
-						pstmt.executeUpdate();
-						pstmt.close();
-						}
+								}
+								else
+								{
+									pstmt.close();
+									pstmt=con.prepareStatement(insertstr);
+									pstmt.setString(1,tokens[i] );
+									pstmt.setInt(2, 1);
+									pstmt.setFloat(3, 0);
+									pstmt.executeUpdate();
+									pstmt.close();
+								}
 						
-						if(previousstr!=null)
-						{
-							pstmt.close();
-							pstmt=con.prepareStatement(selectstrbi);
-							pstmt.setString(1, previousstr);
-							pstmt.setString(2, tokens[i]);
-							rst=pstmt.executeQuery();
-							if(rst.next())
-							{
-								pstmt.close();
-								pstmt=con.prepareStatement(updatestrbi);
-								pstmt.setString(1, previousstr);
-								pstmt.setString(2, tokens[i]);
-								pstmt.executeUpdate();
-								pstmt.close();
-							}
-							else
-							{
-								pstmt.close();
-								pstmt=con.prepareStatement(insertstrbi);
-								pstmt.setString(1, previousstr);
-								pstmt.setString(2, tokens[i]);
-								pstmt.setInt(3, 1);
-								pstmt.setDouble(4, 0);
-								pstmt.executeUpdate();
-								pstmt.close();
+								if(previousstr!=null)
+								{
+									pstmt.close();
+									pstmt=con.prepareStatement(selectstrbi);
+									pstmt.setString(1, previousstr);
+									pstmt.setString(2, tokens[i]);
+									rst=pstmt.executeQuery();
+									if(rst.next())
+									{
+										pstmt.close();
+										pstmt=con.prepareStatement(updatestrbi);
+										pstmt.setString(1, previousstr);
+										pstmt.setString(2, tokens[i]);
+										pstmt.executeUpdate();
+										pstmt.close();
+									}
+									else
+									{
+										pstmt.close();
+										pstmt=con.prepareStatement(insertstrbi);
+										pstmt.setString(1, previousstr);
+										pstmt.setString(2, tokens[i]);
+										pstmt.setInt(3, 1);
+										pstmt.setDouble(4, 0);
+										pstmt.executeUpdate();
+										pstmt.close();
 								
 								
+									}
+								}
+								previousstr=tokens[i];
+					
 							}
+					
 						}
-						previousstr=tokens[i];
-					
-					}
-					
-				}
 				
 				
 				//con.commit();
+					}
+					
+					in.close();
+				}
 			}
 			
 			if(pstmt!=null)
@@ -182,9 +197,11 @@ public class ReadFile {
 			if(pstmt!=null)
 			pstmt.close();
 			con.close();
-			in.close();
+			
 			
 		}
+			
+		
 		catch(Exception e)
 		{
 			System.out.println(e);
