@@ -68,7 +68,7 @@ public class ReadFile {
 			
 		
 			
-			File dirinput=new File("/Users/sankarsanseal/Downloads/bangladir/AB/");
+			File dirinput=new File("/home/sankarsan/Documents/banglawiki.txt/AA/");
 			File [] filelistarr=dirinput.listFiles();
 			File fileinput;
 			for(j=0;j<filelistarr.length;j++)
@@ -81,11 +81,12 @@ public class ReadFile {
 					BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(fileinput),"UTF-8"));
 					while((inputline=in.readLine())!=null)
 					{
-						tokens=inputline.split("\\s+");
+						tokens=inputline.split("[-\\.=:|?\")(/<>।\\s+]");
 						for(i=0;i<tokens.length;i++)
 						{
+							tokens[i].replaceAll("[-()<>,|]", "");
 							System.out.println(tokens[i]);
-							if(tokens[i]!=null && tokens[i].length() <=100)
+							if(tokens[i]!=null && tokens[i].length() <=100&& !(tokens[i].equals("")))
 							{
 								pstmt=con.prepareStatement(selectstr);
 								pstmt.setString(1,tokens[i]);
