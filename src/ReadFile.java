@@ -41,7 +41,7 @@ public class ReadFile {
 		int totalcount=1;
 		int wordpcount=1;
 		
-		double lambda=0.3;
+
 		
 		try
 		{
@@ -66,14 +66,13 @@ public class ReadFile {
 			updateprob="UPDATE monogram SET probability=count/?";
 			updateprobbi="UPDATE bigram SET probability=count/?  WHERE wordp=?";
 			allwordsstr="SELECT word , count FROM monogram";
-			updatesmoothprob="UPDATE bigram as bg SET probability=(1-?)*bg.probability + ?*"+
-								"(SELECT probability FROM monogram WHERE word=bg.wordn)";	
+			
 			//pstmt=con.prepareStatement(insertstr);
 			
 			
 		
 			
-			File dirinput=new File("/home/sankarsan/Documents/banglawiki.txt/AC/");
+			File dirinput=new File("/Users/sankarsanseal/Downloads/bangladir/AB/");
 			File [] filelistarr=dirinput.listFiles();
 			File fileinput;
 			for(j=0;j<filelistarr.length;j++)
@@ -194,12 +193,7 @@ public class ReadFile {
 					
 				}
 				
-			if(pstmt!=null)
-				pstmt.close();
-				pstmt=con.prepareStatement(updatesmoothprob);
-				pstmt.setDouble(1, lambda);
-				pstmt.setDouble(2, lambda);
-				pstmt.executeUpdate();
+
 			
 			
 			
