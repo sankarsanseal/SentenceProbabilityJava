@@ -1,5 +1,5 @@
 ReadFile.java is source code file for reading input from wiki dump.
-We need mysql database for setting up the two tables
+We need mysql database for setting up the two tables.
 
 
 SentenceProbability.java uses the available probability 
